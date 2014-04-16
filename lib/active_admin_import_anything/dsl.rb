@@ -10,8 +10,12 @@ module ActiveAdminImportAnything
       end
 
       collection_action :import_file, :method => :post do
-        FileDb.do_import(params[:dump][:file], &block)
-        redirect_to :action => :index, :notice => "#{active_admin_config.resource_name.to_s} imported successfully!"
+        begin
+          FileDb.do_import(params[:dump][:file], &block)
+          redirect_to :action => :index, :notice => "#{active_admin_config.resource_name.to_s} imported successfully!"
+        rescue => e
+          redirect_to :action => :index, :alert => "Error: #{e.message}"
+        end
       end
     end
   end
